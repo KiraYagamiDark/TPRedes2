@@ -1,34 +1,41 @@
-# Exercicio 1 Erik Fernandes dos Santos
-#!/usr/bin/env python3  
+# Autor: Erik Fernandes dos Santos
 
-import socket  # Importa o modulo de sockets para comunicacao via rede
+# Importa o módulo de sockets para comunicação em rede
+import socket
 
-# Define o endereco e a porta onde o servidor vai escutar conexoes
-HOST = 'localhost'  # Endereco local (127.0.0.1)
-PORT = 50000        # Porta onde o servidor ira escutar
+# Define o endereço IP e a porta onde o servidor vai escutar
+HOST = '127.0.0.1'  # Endereço IP local (localhost)
+PORT = 50000        # Porta onde o servidor vai escutar
 
-# Cria um socket TCP/IP (SOCK_STREAM indica TCP)
+# Cria um socket TCP/IP
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
-# Associa o socket ao endereco e porta definidos
+# Associa o socket ao endereço e porta especificados
 s.bind((HOST, PORT))
 
-# Coloca o socket em modo de escuta, pronto para aceitar conexoes
+# Coloca o socket em modo de escuta, pronto para aceitar conexões
 s.listen()
 
-print('Aguardando conexao')  # Mensagem indicando que o servidor esta esperando uma conexao
+print(f"Servidor ouvindo em {HOST}:{PORT}")
 
-# Aceita uma conexao quando um cliente se conecta
-conn, ender = s.accept()
-
-print('Conectado em', ender)  # Exibe o endereco do cliente conectado
-
-# Loop principal para comunicacao com o cliente
+# Loop principal para aceitar e processar conexões de clientes
 while True:
-    data = conn.recv(1024)  # Recebe ate 1024 bytes de dados enviados pelo cliente
-    if not data:
-        # Se nao houver dados (cliente desconectou), fecha a conexao
-        print('Fechando a conexao')
-        conn.close()
-        break
-    conn.sendall(data)  # Envia de volta 
+    # Aceita uma nova conexão
+    conn, addr = s.accept()
+    print(f"Conectado por {addr}")
+
+    # Recebe até 1024 bytes de dados do cliente
+    data = conn.recv(1024)
+
+    # Verifica se algum dado foi recebido
+    if data:
+        # Decodifica os dados recebidos de bytes para string e remove espaços em branco
+        mensagem = data.decode().strip()
+        print(f"Mensagem recebida: {mensagem}")
+
+        # Envia uma confirmação de recebimento para o cliente
+        conn.sendall(b"Mensagem recebida")
+
+    # Fecha a conexão com o cliente
+    conn.close()
+
