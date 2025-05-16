@@ -1,12 +1,9 @@
+# Importa o módulo de sockets para comunicação em rede
+import socket
 
-# Exercicio 1 Erik Fernandes 
-#!/usr/bin/env python3 
-
-import socket  # Importa o modulo de sockets para comunicacao em rede
-
-# Define o endereco IP e a porta do servidor ao qual o cliente vai se conectar
+# Define o endereço IP e a porta do servidor ao qual o cliente vai se conectar
 HOST = '127.0.0.1'  # Endereço IP local (localhost)
-PORT = 50000        # Porta onde o servidor esta escutando
+PORT = 50000        # Porta onde o servidor está escutando
 
 # Cria um socket TCP/IP
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -14,13 +11,22 @@ s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 # Conecta ao servidor no endereço e porta especificados
 s.connect((HOST, PORT))
 
-# Envia a mensagem 'Bom dia' para o servidor
-# str.encode() converte a string para bytes, que e o formato necessario para envio
-s.sendall(str.encode('Bom dia'))
+# Solicita ao usuário que digite uma mensagem
+mensagem = input("Digite a mensagem: ").strip()
 
-# Recebe ate 1024 bytes da resposta do servidor
-data = s.recv(1024)
+# Verifica se a mensagem não está vazia
+if mensagem:
+    # Envia a mensagem codificada para bytes
+    s.sendall(mensagem.encode())
 
-# Exibe a mensagem recebida (ecoada) decodificando de bytes para string
-print('mensagem ecoada', data.decode())
+    # Recebe até 1024 bytes da resposta do servidor
+    resposta = s.recv(1024)
 
+    # Exibe a resposta do servidor decodificando de bytes para string
+    print(f"Resposta do servidor: {resposta.decode()}")
+else:
+    # Informa que a mensagem está vazia e não será enviada
+    print("Mensagem vazia não enviada.")
+
+# Fecha o socket para encerrar a conexão
+s.close()
